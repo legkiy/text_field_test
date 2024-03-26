@@ -25,6 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onSuccess() {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _text = _textController.text;
+      });
+      _showText(context);
+    }
+  }
+
   Future<void> _showText(BuildContext context) async {
     return showDialog(
       context: context,
@@ -72,7 +81,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   TextFormField(
+                    onTapOutside: (event) {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
                     controller: _textController,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: onSuccess,
                     decoration: InputDecoration(
                       label: const Text('Поле ввода'),
                       border: const OutlineInputBorder(
@@ -93,14 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 30,
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        setState(() {
-                          _text = _textController.text;
-                        });
-                        _showText(context);
-                      }
-                    },
+                    onPressed: onSuccess,
                     child: const Text('Показать текст'),
                   ),
                 ],
